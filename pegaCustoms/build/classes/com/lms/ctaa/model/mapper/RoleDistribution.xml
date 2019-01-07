@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lms.ctaa.dao.RoleDistributionDao">
+	<resultMap type="com.lms.ctaa.pojo.RoleDistribution" id="distributionMap">
+        <result column="id" property="id"/>
+        <result column="role" property="role"/>
+        <result column="distribution" property="distribution"/>
+        <result column="module" property="module"/>
+    </resultMap>
+    <sql id="RoleDistributionColums">
+    ID,
+    POST,
+    DISTRIBUTION,
+    MODULE,
+    SPELL
+    </sql>
+	<select id="selectByRole"  resultMap="distributionMap" parameterType="string">
+		SELECT 
+        <include refid="RoleDistributionColums"/>
+        FROM roledistribution WHERE ROLE=#{role}
+	</select>
+	<select id="selectAll"  resultMap="distributionMap" >
+		SELECT 
+        <include refid="RoleDistributionColums"/>
+        FROM roledistribution 
+	</select>
+	<select id="selectBySpell"  resultMap="distributionMap" parameterType="string">
+		SELECT 
+		<include refid="RoleDistributionColums"/>	
+        FROM roledistribution WHERE SPELL=#{spell}
+	</select>
+</mapper>

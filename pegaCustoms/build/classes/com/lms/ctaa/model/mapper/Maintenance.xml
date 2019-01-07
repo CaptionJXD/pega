@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lms.ctaa.dao.MaintenanceDao">
+	<resultMap type="com.lms.ctaa.pojo.Maintenance" id="maintenanceMap">
+        <result column="id" property="id"/>
+        <result column="post" property="post"/>
+        <result column="imex_status" property="imexStatus"/>
+        <result column="role_area" property="roleArea"/>
+        <result column="role_raea_cast" property="roleRaeaCast"/>
+        <result column="remark" property="remark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="cast_code" property="castCode"/>
+        <result column="org_guid" property="orgGuid"/>
+    </resultMap>
+
+    <sql id="maintenanceColums">
+    ID,
+    POST,
+    ROLE_AREA,
+    ROLE_RAEA_CAST,
+    NVL(REMARK,'') REMARK,
+    CREATE_TIME,
+    USER_ID,
+    CAST_CODE,
+    ORG_GUID
+    </sql>
+    <!--  
+      <cache readOnly="true" size="500" flushInterval="120000" eviction="LRU" />
+-->
+      <cache type="com.lms.redis.RedisCache" eviction="LRU" />
+	<select id="selectMaintenance" resultMap="maintenanceMap"  parameterType="pageUtil" useCache="true" >
+		SELECT 
+		<include refid="maintenanceColums"/>
+		
+		FROM (
+			SELECT rownum rum,p.* FROM parameter_maintenance p  WHERE 1=1
+	       <if test="t !=null">
+			  <if test="t.post!=null and t.post !='' ">
+             AND  post=#{t.post} 
+              </if>
+              <if test="t.orgGuid!=null and t.orgGuid !='' ">
+             AND  org_guid=#{t.orgGuid} 
+              </if> 
+           </if>
+             ORDER BY CREATE_TIME DESC
+              ) tm
+		WHERE   rum >${start} AND rum &lt;=${end} 
+	</select>
+	
+	<select id="selectMaintenanceById"  resultMap="maintenanceMap"  parameterType="string">
+		SELECT 
+		<include refid="maintenanceColums"/>
+        FROM parameter_maintenance WHERE id=#{id} 
+	</select>
+	
+	<insert id="maintenanceSave" parameterType="maintenance">
+		INSERT ALL INTO  parameter_maintenance (id,post,role_area,role_raea_cast,remark,create_time,user_id,cast_code,org_guid)
+	      VALUES
+		<foreach collection ="list" item="item" index="index" separator="INTO  parameter_maintenance (id,post,role_area,role_raea_cast,remark,create_time,user_id,cast_code,org_guid) VALUES">
+		
+		 (#{item.id},#{item.post},#{item.roleArea},#{item.roleRaeaCast},#{item.remark},sysdate,#{item.userId},#{item.castCode},#{item.orgGuid})
+		</foreach>
+	    SELECT 1 FROM DUAL
+	</insert>
+	
+	<delete id="maintenanceDelete"    parameterType="string">
+		DELETE FROM parameter_maintenance WHERE id=#{id} 
+	</delete>
+	
+	<select id="selectCount" resultType="int">
+		SELECT count(*) FROM parameter_maintenance 
+		WHERE 1=1 
+	</select>
+	
+	<select id="selectCountCondition" resultType="int" parameterType="maintenance" useCache="true" >
+		SELECT count(*) FROM parameter_maintenance 
+		WHERE 1=1 
+		     <if test="post != null and post.length()>0">
+             AND  post=#{post} 
+             </if>   
+             <if test="orgGuid !=null and orgGuid.length()>0">
+             AND  org_guid=#{orgGuid} 
+             </if>      
+	</select>
+	
+	<select id="selectInfo" resultMap="maintenanceMap" parameterType="maintenance">
+		SELECT 
+		<include refid="maintenanceColums"/>
+	    FROM parameter_maintenance  WHERE post=#{post} 
+	         <if test="orgGuid != null and orgGuid.length()>0">
+             AND  org_guid=#{orgGuid} 
+             </if>  
+	      AND ROLE_RAEA_CAST LIKE  #{roleRaeaCast}
+	</select>
+	
+	<select id="queryMaintenance"  resultMap="maintenanceMap"  parameterType="string">
+		SELECT 
+		<include refid="maintenanceColums"/>
+        FROM parameter_maintenance 
+	</select>
+</mapper>

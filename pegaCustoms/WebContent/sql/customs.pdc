@@ -1,0 +1,41 @@
+-- Create table
+create table CUSTOMS
+(
+  ID               NUMBER(32) not null,
+  CUSTOMS_NAME     VARCHAR2(60),
+  SUOERIOR_SUSTOMS VARCHAR2(60),
+  CREATE_TIME      DATE
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 16
+    minextents 1
+    maxextents unlimited
+  );
+-- Add comments to the columns 
+comment on column CUSTOMS.ID
+  is '主键id';
+comment on column CUSTOMS.CUSTOMS_NAME
+  is '直属海关名称';
+comment on column CUSTOMS.SUOERIOR_SUSTOMS
+  is '直属海关关区代码';
+comment on column CUSTOMS.CREATE_TIME
+  is '创建时间';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table CUSTOMS
+  add constraint PK_CUSTOMS primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );

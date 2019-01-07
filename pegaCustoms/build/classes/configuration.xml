@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL MAP Config 3.1//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ <configuration>
+
+ 	<settings>
+ 		<setting name = "callSettersOnNulls" value = "true"/>
+ 		<!-- <setting name = "logImpl" value = "STDOUT_LOGGING"/> -->
+ 		<setting name = "logImpl" value = "log4j"/>
+ 		<setting name="cacheEnabled" value="ture" />
+ 		
+ 		<setting name="lazyLoadingEnabled" value="false" />
+ 		
+ 		<setting name="multipleResultSetsEnabled" value="ture" />
+ 		
+ 		<setting name="aggressiveLazyLoading" value="ture" />
+ 	</settings>
+ 	<typeAliases>
+ 		<!-- //包名形式<package name="com.lms.ctaa.bean" /> -->
+  	    <typeAlias  type="com.lms.ctaa.pojo.Maintenance" alias="maintenance" />
+        <typeAlias  type="com.lms.ctaa.util.PageUtil" alias="pageUtil" />
+        <typeAlias  type="com.lms.ctaa.pojo.Customs" alias="customsMap" />
+        <typeAlias  type="com.lms.ctaa.pojo.Rolecastcode" alias="rolecastcodeMap" />
+    </typeAliases>
+    
+ </configuration>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lms.ctaa.dao.RolecastcodeDao">
+    <resultMap type="com.lms.ctaa.pojo.Rolecastcode" id="rolecastcodeMap">
+        <result column="id" property="id"/>
+        <result column="role" property="role"/>
+        <result column="cast_code" property="castCode"/>
+        <result column="cast_code_name" property="castCodeName"/>
+        <result column="post" property="post"/>
+    </resultMap>
+    
+    <sql id="RoleCaseCodeColums">
+     ID,
+     ROLE,
+     CAST_CODE,
+     CAST_CODE_NAME,
+     POST
+    </sql>
+
+	<insert id="RolecastcodeSave" parameterType="rolecastcodeMap">
+		INSERT ALL INTO  ROLECASTCODE (id,role,cast_code,cast_code_name,post)
+	      VALUES
+		<foreach collection ="list" item="item" index="index" separator="INTO  ROLECASTCODE (id,role,cast_code,cast_code_name,post) VALUES">	
+		 (#{item.id},#{item.role},#{item.castCode},#{item.castCodeName},#{item.post})
+		</foreach>
+	    SELECT 1 FROM DUAL
+	</insert>
+	
+	<select id="selectRolecastcode"  resultMap="rolecastcodeMap"  parameterType="rolecastcodeMap">
+		SELECT 
+		<include refid="RoleCaseCodeColums"/>
+        FROM ROLECASTCODE WHERE cast_code=#{castCode} 
+	</select>
+	<select id="isRolecastcode"  resultMap="rolecastcodeMap"  parameterType="rolecastcodeMap">
+		SELECT 
+		<include refid="RoleCaseCodeColums"/>
+        FROM ROLECASTCODE WHERE 1=1 
+		 and
+		     (cast_code=#{castCode}  and post=#{post} and role=#{role})
+		 or  (cast_code=#{castCode}  and post=#{post})
+	</select>
+	
+	<delete id="RolecastcodeDelete" parameterType="rolecastcodeMap">
+		DELETE  FROM ROLECASTCODE a 
+		WHERE exists(
+		SELECT　1 FROM(
+		<foreach collection ="list" item="item" index="index" separator="union all">
+		SELECT 	c.* FROM ROLECASTCODE c WHERE 
+		 c.role=#{item.role} and c.cast_code=#{item.castCode} and c.post=#{item.post}
+		</foreach>
+	    )b WHERE a.id=b.id
+	    )
+	</delete>
+</mapper>

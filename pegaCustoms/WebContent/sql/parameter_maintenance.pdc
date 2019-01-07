@@ -1,0 +1,56 @@
+﻿-- Create table
+create table PARAMETER_MAINTENANCE
+(
+  ID             NUMBER(32) not null,
+  POST           VARCHAR2(32) not null,
+  ROLE_AREA      VARCHAR2(32),
+  ROLE_RAEA_CAST VARCHAR2(64),
+  REMARK         VARCHAR2(64),
+  CREATE_TIME    DATE,
+  USER_ID        VARCHAR2(64) not null,
+  CAST_CODE      VARCHAR2(64)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64
+    minextents 1
+    maxextents unlimited
+  );
+-- Add comments to the table 
+comment on table PARAMETER_MAINTENANCE
+  is '参数维护表';
+-- Add comments to the columns 
+comment on column PARAMETER_MAINTENANCE.ID
+  is '主键';
+comment on column PARAMETER_MAINTENANCE.POST
+  is '岗位';
+comment on column PARAMETER_MAINTENANCE.ROLE_AREA
+  is '角色所在关区';
+comment on column PARAMETER_MAINTENANCE.ROLE_RAEA_CAST
+  is '角色映射关区名称加关区号';
+comment on column PARAMETER_MAINTENANCE.REMARK
+  is '备注';
+comment on column PARAMETER_MAINTENANCE.CREATE_TIME
+  is '创建时间';
+comment on column PARAMETER_MAINTENANCE.USER_ID
+  is '登陆的userid';
+comment on column PARAMETER_MAINTENANCE.CAST_CODE
+  is '映射关区代码（关区号）';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table PARAMETER_MAINTENANCE
+  add constraint PK_PARAMETER_MAINTENANCE primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );

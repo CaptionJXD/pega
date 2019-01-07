@@ -1,0 +1,44 @@
+-- Create table
+create table ROLECASTCODE
+(
+  ID             NUMBER(32) not null,
+  ROLE           VARCHAR2(32) not null,
+  CAST_CODE      VARCHAR2(32),
+  CAST_CODE_NAME VARCHAR2(32),
+  POST           VARCHAR2(32)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64
+    minextents 1
+    maxextents unlimited
+  );
+-- Add comments to the columns 
+comment on column ROLECASTCODE.ID
+  is '主键';
+comment on column ROLECASTCODE.ROLE
+  is '关区代码';
+comment on column ROLECASTCODE.CAST_CODE
+  is '映射的关代码';
+comment on column ROLECASTCODE.CAST_CODE_NAME
+  is '映射关区的名称';
+comment on column ROLECASTCODE.POST
+  is '岗位';
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ROLECASTCODE
+  add constraint PK_ROLECASTCODE primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );

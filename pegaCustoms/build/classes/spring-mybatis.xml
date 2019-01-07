@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"	
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://cxf.apache.org/jaxws
+	http://cxf.apache.org/schemas/jaxws.xsd">	
+ 	<context:component-scan base-package="com.lms">
+ 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"></context:exclude-filter>
+ 	</context:component-scan>
+ 	<context:property-placeholder location="classpath:config.properties" />
+ 	
+ 	<import resource="classpath:META-INF/cxf/cxf.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+ 	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="${jdbc.driver}"/>
+      <property name="url" value="${jdbc.url}"/>
+      <property name="username" value="${jdbc.username}"/>
+      <property name="password" value="${jdbc.password}"/>
+   	</bean> -->
+   	
+   	<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"> 
+	    <!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+	    <property name="driverClassName" value="${jdbc.driver}" />
+	    
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${jdbc.pool.init}" />
+		<property name="minIdle" value="${jdbc.pool.minIdle}" /> 
+		<property name="maxActive" value="${jdbc.pool.maxActive}" />
+		
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="${jdbc.testSql}" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用）
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" /> -->
+		
+		<!-- 配置监控统计拦截的filters -->
+	   <!--  <property name="filters" value="stat" />  -->
+	</bean>
+   	
+   	
+   	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+	<property name="MaxIdle" value="32"></property>
+	<property name="MaxTotal" value="1000"></property>
+	<property name="MaxWaitMillis" value="20000"></property>
+	<property name="TestOnBorrow" value="true"></property>
+	</bean>
+	
+
+	<bean id="JedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+	<property name="hostName" value="127.0.0.1"></property>
+	<property name="port" value="6379"></property>
+	<property name="database" value="0"></property>
+	<property name="poolConfig" ref="poolConfig"></property>
+	</bean>
+	
+	<bean id="jdkSerializationRedisSerializer" class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"/>
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+     
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+         <property name="connectionFactory" ref="JedisConnectionFactory"></property>
+         <property name="keySerializer" ref="stringRedisSerializer"></property>
+         <property name="valueSerializer" ref="jdkSerializationRedisSerializer"></property>
+    </bean>
+      
+    <bean id="redisCacheTransfer" class="com.lms.redis.RedisCacheTransfer">
+          <property name="connectionFactory" ref="JedisConnectionFactory" />
+    </bean>
+    <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+            <constructor-arg index="0" ref="redisTemplate" />
+    </bean>
+   	
+   	<!-- spring+mybatis -->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/> 	
+        <!-- 返回NUll -->
+		<property name ="configLocation" value="classpath:configuration.xml"/>
+
+	    <!-- 自动扫描mapper.xml文件 -->
+    	<property name="mapperLocations" value="classpath:com/lms/ctaa/model/mapper/*.xml"/>
+ 	</bean>
+ 	<!-- dao接口所在的包名 -->
+ 	<bean  class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 	    <property name="basePackage" value="com.lms.ctaa.dao"/>
+ 	    <property name="sqlSessionFactoryBeanName"  value="sqlSessionFactory"/>
+ 	</bean>
+ 	<!-- 事务管理 -->
+ 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref ="sqlSessionFactory"/>
+	</bean>
+ 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property> 	
+ 	</bean>
+ 	
+ 	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean id="roleServiceImpl" class="com.role.webService.RoleServiceImpl"/>
+	<jaxws:server id="roleService" serviceClass="com.role.webService.RoleService" address="/role">
+	    <jaxws:serviceBean>
+	        <ref bean="roleServiceImpl"/>
+	    </jaxws:serviceBean>
+	</jaxws:server>	
+	
+	<bean id="customsService" class="com.lms.ctaa.service.impl.CustomsServiceImpl"></bean>
+	<bean id="customsdao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.lms.ctaa.dao.CustomsDao"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="maintenanceService" class="com.lms.ctaa.service.impl.MaintenanceServiceImpl"></bean>
+	<bean id="maintenancedao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.lms.ctaa.dao.MaintenanceDao"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	<bean id="roleDistributionService" class="com.lms.ctaa.service.impl.RoleDistributionServiceImpl"></bean>
+	<bean id="roleDistributiondao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.lms.ctaa.dao.RoleDistributionDao"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<bean id="rolecastcodeService" class="com.lms.ctaa.service.impl.RolecastcodeServiceImpl"></bean>
+	<bean id="rolecastcodedao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="com.lms.ctaa.dao.RolecastcodeDao"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+</beans>

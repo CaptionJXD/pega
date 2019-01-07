@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+<!-- 	<module name="h4aIdentity"> -->
+<!-- 		<group name="wsAddress"> -->
+ 			<!-- 研发网10.200.2.167       管理网192.168.30.7       联调测试环境运行网192.168.1.1     生产环境运行网  登陆地址也要改--> 
+<!-- 			<configValue key="OguReaderService">http://10.200.2.167/CupaaCenterService/OguReaderService.svc</configValue> -->
+<!-- 			<configValue key="AccreditReaderService">http://10.200.2.167/CupaaCenterService/AccreditReaderService.svc</configValue> -->
+<!-- 			<configValue key="RegisterAppService">http://10.200.2.167/AppRegisterService/RegisterAppReaderService.svc</configValue> -->
+<!-- 		</group> -->
+<!-- 	</module> -->
+<!-- 	<module name="passportSSO"> -->
+<!-- 		<group name="url"> -->
+<!-- 			<configValue key="authenticateUrl">http://10.200.2.167/Passport/SsoLogin.aspx</configValue> -->
+<!-- 			<configValue key="logOffUrl">http://10.200.2.167/Passport/Logoff.aspx</configValue> -->
+<!-- 		</group> -->
+<!-- 	</module> -->
+	
+	<module name="h4aIdentity">
+		<group name="wsAddress">
+<!-- 			研发网10.200.3.130       管理网10.99.101.200     联调测试环境运行网192.168.1.1     生产环境运行网  登陆地址也要改  -->
+			<configValue key="OguReaderService">http://10.99.20.110:8080/CupaaCenterService/OguReaderService.svc</configValue>
+			<configValue key="AccreditReaderService">http://10.99.20.110:8080/CupaaCenterService/AccreditReaderService.svc</configValue>
+			<configValue key="RegisterAppService">http://10.99.20.110:8080/AppRegisterService/RegisterAppReaderService.svc</configValue>
+		</group>
+	</module>
+	<module name="passportSSO">
+		<group name="url">
+			<configValue key="authenticateUrl">http://10.99.20.110:8080/Passport/SsoLogin.aspx</configValue>
+			<configValue key="logOffUrl">http://10.99.20.110:8080/Passport/Logoff.aspx</configValue>
+		</group>
+	</module>
+</application>

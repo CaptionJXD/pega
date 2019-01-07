@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+	<module name="h4aIdentity">
+		<group name="wsCache">
+			<!-- cacheControl 值为off为开启缓存，值为on为关闭缓存 -->
+			<configValue key="cacheControl">off</configValue>
+			<configValue key="cacheTime">300000000</configValue>
+			<configValue key="cacheClearTime">1</configValue>
+			<configValue key="initialDelay">0</configValue>
+			<configValue key="clearCachePeriod">1440</configValue>
+		</group>
+	</module>
+	<module name="passportSSO">
+		<group name="passport">
+		    <configValue key="appID">CYYC</configValue>
+<!-- 		<configValue key="appID">TESTPLATWEB</configValue> -->
+			<configValue key="viewCode">CICC_VIEW </configValue>
+			<!-- 联调环境用的是基础视角 -->
+			<!-- <configValue key="viewCode">CCIC_VIEW </configValue> -->
+			<configValue key="appSlidingTime">0</configValue>
+			<configValue key="idAuthenticationMode">forms</configValue>
+			<configValue key="paramT">token</configValue>
+			<configValue key="defaultAuthenticationMode">FormsAuthentication</configValue>
+		</group>
+		<group name="url">
+			<!-- 登出后是否自动跳转回应用系统，false为登出后，停在三统一的登出页面 -->
+			<configValue key="logoffAutoRedirect">true</configValue>
+			<!-- 登出后系统自动跳转回系统的页面，上面设置为true时生效 -->
+			<configValue key="logoffToDefaultUriString">index.jsp</configValue>
+			<!--web.xml配置一个servlet,/LogOff 对应的类为 cn.gov.customs.casp.sdk.h4a.sso.passport.LogOff 
+				用于设置应用登出后执行系统的登出功能 -->
+			<configValue key="logOffCallBackUrl">/LogOff</configValue>
+			<!-- 登出后跳转加应用系统的页面 -->
+			<configValue key="loginRedirectUrl">index.jsp</configValue>
+		</group>
+		<group name="defaultAuthenticationMode">
+			<configValue key="*.jpg">Anonymous</configValue>
+			<configValue key="*.gif">Anonymous</configValue>
+			<configValue key="/anonymous.html">Anonymous</configValue>
+			<configValue key="/WindowsAuthentication/*.jsp">WindowsAuthentication</configValue>
+			<configValue key="/WindowsAuthentication/test*">WindowsAuthentication</configValue>
+		</group>
+	</module>
+	<module name="SSOAddress">
+		<group name="ssoAddress">
+			<!-- 海关三统一IPassportSSO接口实现类相对路径，如不继承IPassportSSO接口则不用填写实现类路径 -->
+			<!-- 如果配置了自己应用的登录登出，可在自己应用中放入个性化登录数据、信息等，如不实现此接口，可使用CADP STUDIO中的userObject对象获取默认放入的基本登录信息 -->
+			<configValue key="PassportManager">com.lms.ctaa.controller.LmsPassportSSO</configValue>
+		</group>
+	</module>
+	<module name="h4a_default">
+		<group name="wcf_default">
+			<configValue key="default_cache_max_capacity">10000</configValue>
+			<configValue key="default_BaseView">BASE_VIEW </configValue>
+<!-- 		<configValue key="default_Application_name">TESTPLATWEB</configValue> -->
+			<configValue key="default_Application_name">CYYC</configValue>
+		</group>
+		<group name="Intercepter_load_switch">
+			<configValue key="Intercepter_Control">false</configValue>
+		</group>
+	</module>
+	<!-- <module name="alarm"> <group name="alarm_type"> <configValue key="VIEW_VEHICLE_ALARM">1</configValue> 
+		<configValue key="VIEW_SHIP_ALARM">2</configValue> <configValue key="VIEW_OTHER_ALARM">3</configValue> 
+		</group> <group name="alarm_url"> <configValue value="VIEW_SHIP">model/ship.html</configValue> 
+		<configValue value="VIEW_VEHICLE">model/car.html</configValue> <configValue 
+		value="VIEW_LOGISCHAIN">model/logistics.html</configValue> <configValue value="ALARM_VIEW">model/alarm.html</configValue> 
+		<configValue value="VIEW_SHIP_ALARM">model/alarm_ship.html</configValue> 
+		<configValue value="VIEW_VEHICLE_ALARM">model/alarm_vehicle.html</configValue> 
+		<configValue value="VIEW_OTHER_ALARM">model/alarm_other.html</configValue> 
+		</group> </module> -->
+</application>

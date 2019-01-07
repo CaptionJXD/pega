@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lms.ctaa.dao.CustomsDao">
+	<resultMap type="com.lms.ctaa.pojo.Customs" id="customsMap">
+        <result column="id" property="id"/>
+        <result column="customs_name" property="customsName"/>
+        <result column="suoerior_sustoms" property="suoeriorSustoms"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="CustomsColums">
+    ID,
+    CUSTOMS_NAME,
+    SUOERIOR_SUSTOMS,
+    CREATE_TIME
+    </sql>
+	<select id="selectById"  resultMap="customsMap" parameterType="string">
+		SELECT 
+	   <include refid="CustomsColums"/>
+		FROM customs WHERE id=#{id}
+	</select>
+	
+	<select id="select" resultMap="customsMap">
+		SELECT 
+	   <include refid="CustomsColums"/>
+        FROM customs 
+	</select>
+	
+    <insert id="saveCustoms" parameterType="java.util.List">
+		INSERT ALL INTO  CUSTOMS(ID,CUSTOMS_NAME,SUOERIOR_SUSTOMS,CREATE_TIME)
+    	VALUES
+	    <foreach collection ="list" item="item" index="index" separator="INTO CUSTOMS(ID,CUSTOMS_NAME,SUOERIOR_SUSTOMS,CREATE_TIME) VALUES">
+	    	(#{item.id},#{item.customsName},#{item.suoeriorSustoms},sysdate)
+	    </foreach>
+	    SELECT * FROM dual
+	</insert>
+	
+	<select id="getCustomsName" resultMap="customsMap" parameterType="string">
+		SELECT 
+	   <include refid="CustomsColums"/>
+		 FROM customs WHERE  suoerior_sustoms=#{CustomsCode}
+	</select>
+	
+	<select id="selectByCustomsCode" resultMap="customsMap" parameterType="string">
+		SELECT 	
+		<include refid="CustomsColums"/>
+		 FROM customs WHERE SUBSTR(SUOERIOR_SUSTOMS,1,2) = #{CustomsCode}
+	</select>
+	
+	<delete id="deleteAllData"  >
+		DELETE FROM CUSTOMS
+	</delete>
+</mapper>

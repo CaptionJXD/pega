@@ -1,0 +1,94 @@
+prompt PL/SQL Developer import file
+prompt Created on 2018年12月20日 by Administrator
+set feedback off
+set define off
+prompt Creating ROLEDISTRIBUTION...
+create table ROLEDISTRIBUTION
+(
+  ID           NUMBER(32) not null,
+  POST         VARCHAR2(32),
+  DISTRIBUTION VARCHAR2(32),
+  MODULE       VARCHAR2(64),
+  SPELL        VARCHAR2(64)
+)
+tablespace USERS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );
+comment on table ROLEDISTRIBUTION
+  is '系统角色和分发逻辑表';
+comment on column ROLEDISTRIBUTION.ID
+  is '主键';
+comment on column ROLEDISTRIBUTION.POST
+  is '系统角色';
+comment on column ROLEDISTRIBUTION.DISTRIBUTION
+  is '分发逻辑0为申报1为查验地';
+comment on column ROLEDISTRIBUTION.MODULE
+  is '功能模块';
+comment on column ROLEDISTRIBUTION.SPELL
+  is '系统角色的拼写';
+alter table ROLEDISTRIBUTION
+  add constraint PK_ROLEDISTRIBUTION primary key (ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Disabling triggers for ROLEDISTRIBUTION...
+alter table ROLEDISTRIBUTION disable all triggers;
+prompt Deleting ROLEDISTRIBUTION...
+delete from ROLEDISTRIBUTION;
+commit;
+prompt Loading ROLEDISTRIBUTION...
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201814, '事件办结岗', '0', null, 'CYYCSHIJIANBANJIE');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201815, '非报关单核定岗', '1', null, 'CYYCFEIBAOGUANDANHEDING');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201816, '异常信息录入岗', '1', null, 'CYYCYICHANGXINXILURU');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201801, '其他', '1', '处置结果为其他认定', 'CYYCCHUZHIJIEGUOWEIQITARENDING');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201802, '风险布控岗', '0', '特殊要求处置', 'CYYCFENGXIANBUKONG');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201803, '法规岗', '1', '知识产权处置', 'CYYCFAGUI');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201804, '缉私案件线索录入岗', '1', '缉私处置（违禁品/一般案件）', 'CYYCJISIANJIANXIANSUOLURU');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201805, '异常数据审核岗', '0', '现场通关处置', 'CYYCYICHANGSHUJUHEDING');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201806, '关税初核岗', '0', null, 'CYYCGUANSHUICHUHE');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201807, '关税复核岗', '0', null, 'CYYCGUANSHUIFUHE');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201808, '两简案件线索录入岗', '1', '两简案件处置', 'CYYCLIANGJIANANJIANXIANSUOLURU');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201809, '两简案件线索复核处理岗', '1', null, 'CYYCLIANGJIANANJIANFUHECHUZHI');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201810, '两简案件核对违法事实岗', '1', null, 'CYYCLIANGJIANANJIANHEDUIWEIFASHISHI');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201811, '两简案件文书打印岗', '1', null, 'CYYCLIANGJIANANJIANWENSHUDAYIN');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201812, '两简案件反馈理岗', '1', null, 'CYYCLIANGJIANANJIANFANKUI');
+insert into ROLEDISTRIBUTION (ID, POST, DISTRIBUTION, MODULE, SPELL)
+values (201813, '删改单预判岗', '0', '现场通关处置', 'CYYCSHANGAIDANYUPAN');
+commit;
+prompt 16 records loaded
+prompt Enabling triggers for ROLEDISTRIBUTION...
+alter table ROLEDISTRIBUTION enable all triggers;
+set feedback on
+set define on
+prompt Done.
